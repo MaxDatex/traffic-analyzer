@@ -1,0 +1,22 @@
+# Model settings
+pixel_speed_coef: 1.0
+write_every_n_frames: 10
+analysis_method: "linreg"
+
+# Visualization settings
+line_width: 2
+
+# Analysis settings
+slope_threshold: 10.0
+speed_threshold: 30.0
+min_history_points: 5
+correlation_threshold: 0.5
+parked_speed_threshold: 4.0
+abs_mean_threshold: 1.0
+speed_history_window_size: 15
+
+#If used with CLI this arguments should be specified as arguments. --show --draw-tracks
+show: true
+draw_tracks: true
+draw_direction: true
+do_analyze: true
