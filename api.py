@@ -6,19 +6,22 @@ import os
 import shutil
 import tempfile
 import subprocess  # For video processing (FFmpeg)
-import uuid # For generating unique filenames
+import uuid  # For generating unique filenames
 
 app = FastAPI()
 
 PROCESSED_DIR = "processed"
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
+
 @app.post("/process_video")
 async def process_video_endpoint(file: UploadFile = File(...)):
     """Endpoint to upload, process, and return a video."""
     try:
         # 1. Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as tmp:
+        with tempfile.NamedTemporaryFile(
+            delete=False, suffix=os.path.splitext(file.filename)[1]
+        ) as tmp:
             tmp_path = tmp.name
             shutil.copyfileobj(file.file, tmp)
 
@@ -46,14 +49,17 @@ async def process_video_endpoint(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing video: {str(e)}")
 
+
 @app.get("/download/{filename}")
 async def download_file(filename: str):
     """Endpoint to download a processed video."""
     file_path = os.path.join(PROCESSED_DIR, filename)
     if not os.path.exists(file_path):
-      raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(file_path, filename=filename, media_type="video/mp4")
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

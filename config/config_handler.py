@@ -8,25 +8,26 @@ from pathlib import Path
 @dataclass
 class DetectorConfig:
     """Configuration settings for the vehicle tracker."""
+
     # General settings
     base_dir: Path = Path(__file__).parent.parent
-    
+
     # Model settings
     weights_path: str = base_dir / "weights" / "yolov8s-visdrone.pt"
-    
+
     # Video settings
     show: bool = True
-    
+
     # Model settings
     pixel_speed_coef: float = 2.0
-    write_every_n_frames : int = 10
-    analysis_method: str = 'linreg'
-    
+    write_every_n_frames: int = 10
+    analysis_method: str = "linreg"
+
     # Visualization settings
     draw_tracks: bool = False
     draw_direction: bool = False
     line_width: int = 2
-    
+
     # Analysis settings
     do_analyze: bool = True
     slope_threshold: float = 10.0
@@ -36,15 +37,14 @@ class DetectorConfig:
     min_history_points: int = 5
     correlation_threshold: float = 0.5
     speed_history_window_size: int = 15
-    
+
     @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any]) -> 'DetectorConfig':
+    def from_dict(cls, config_dict: Dict[str, Any]) -> "DetectorConfig":
         """Create config from dictionary."""
-        return cls(**{
-            k: v for k, v in config_dict.items()
-            if k in cls.__dataclass_fields__
-        })
-    
+        return cls(
+            **{k: v for k, v in config_dict.items() if k in cls.__dataclass_fields__}
+        )
+
     def update_from_args(self, args) -> None:
         """Update config with command line arguments."""
         for field in self.__dataclass_fields__:
@@ -54,7 +54,7 @@ class DetectorConfig:
 
 def load_config(config_path: str) -> DetectorConfig:
     """Load configuration from YAML file."""
-    with open(config_path, 'r') as f:
+    with open(config_path, "r") as f:
         config_dict = yaml.safe_load(f)
     return DetectorConfig.from_dict(config_dict)
 
@@ -66,6 +66,6 @@ def save_config(config: DetectorConfig, config_path: str) -> None:
         for field in config.__dataclass_fields__
         if getattr(config, field) is not None
     }
-    
-    with open(config_path, 'w') as f:
+
+    with open(config_path, "w") as f:
         yaml.dump(config_dict, f, default_flow_style=False)

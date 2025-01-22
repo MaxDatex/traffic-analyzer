@@ -3,6 +3,7 @@ from enum import Enum
 
 class VehicleState(Enum):
     """Enumeration of possible vehicle states."""
+
     ARRIVING = "A"
     DEPARTING = "D"
     MOVING = "M"
