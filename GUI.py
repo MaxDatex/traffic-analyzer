@@ -143,6 +143,13 @@ class App(QWidget):
     def closeEvent(self, event):
         if hasattr(self, "thread"):
             self.thread.stop()
+            if self.thread.temp_video_path:  # Delete the temp file if it hasn't been saved
+                try:
+                    import os
+                    os.remove(self.thread.temp_video_path)
+                    print("Temporary file deleted.")
+                except Exception as e:
+                    print(f"Error deleting temp file: {e}")
         event.accept()
 
     @pyqtSlot(np.ndarray)
@@ -182,6 +189,21 @@ class App(QWidget):
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
+
+    def save_video(self):
+        """Save the processed video file to disk."""
+        if hasattr(self, 'thread') and self.thread.temp_video_path:
+            save_path, _ = QFileDialog.getSaveFileName(self, "Save Processed Video", ".", "AVI Files (*.avi)")
+            if save_path:
+                import shutil
+                try:
+                    shutil.move(self.thread.temp_video_path, save_path)
+                    print(f"Video saved successfully to {save_path}")
+                    self.thread.temp_video_path = None  # Clear temp video path after saving
+                    self.saveButton.setEnabled(False)  # Disable save button after saving
+                except Exception as e:
+                    print(f"Error saving file: {e}")
 
 
 if __name__ == "__main__":
