@@ -1,5 +1,5 @@
 import cv2
-from typing import Optional, Callable
+from typing import Optional
 from core.detector import DirectionDetector
 from config.config_handler import DetectorConfig
 
@@ -14,7 +14,7 @@ def process_video(
 
     Args:
         video_path: Path to the input video file
-        detector: Detector instance to process frames
+        config: DetectorConfig instance to process frames
         output_path: Optional path to save the processed video
     """
     cap = cv2.VideoCapture(video_path)

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from collections import defaultdict
 
-from transformers import pipeline
+
 from ultralytics.solutions.solutions import BaseSolution
 from ultralytics.utils.plotting import Annotator
 from config.config_handler import DetectorConfig
@@ -52,7 +52,7 @@ class DirectionDetector(BaseSolution):
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 return 1
 
-    def mouse_event_for_distance(self, event, x, y):
+    def mouse_event_for_distance(self, event, x, y, flags, param):
         """
         Handles mouse events for user interactions with bounding boxes and toggles display settings.
 
