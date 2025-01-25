@@ -27,6 +27,7 @@ class DirectionDetector(BaseSolution):
     primary use case for this solution is in video-based object tracking applications where
     directional and speed analysis is required.
     """
+
     def __init__(self, config: DetectorConfig, **kwargs):
         super().__init__(**kwargs)
 
@@ -101,18 +102,18 @@ class DirectionDetector(BaseSolution):
 
     def estimate_speed(self, im0):
         """
-                Provides functionality to estimate the object speed based on tracked object data across frames.
-                The method processes tracked objects, calculates movement distance and time intervals
-                for an estimated speed calculation, tracks historical data necessary for trend analysis,
-                and updates annotations on the frames.
+        Provides functionality to estimate the object speed based on tracked object data across frames.
+        The method processes tracked objects, calculates movement distance and time intervals
+        for an estimated speed calculation, tracks historical data necessary for trend analysis,
+        and updates annotations on the frames.
 
-                Parameters:
-                im0: numpy.ndarray
-                    The original frame/image from the video input on which the analysis and track annotations will be visualized.
+        Parameters:
+        im0: numpy.ndarray
+            The original frame/image from the video input on which the analysis and track annotations will be visualized.
 
-                Returns:
-                Tuple[numpy.ndarray, bool]
-                    The processed frame with annotations and a flag indicating whether to stop further processing.
+        Returns:
+        Tuple[numpy.ndarray, bool]
+            The processed frame with annotations and a flag indicating whether to stop further processing.
         """
         self.annotator = Annotator(
             im0, line_width=self.config.line_width

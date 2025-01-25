@@ -1,5 +1,13 @@
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QPushButton, QFileDialog, QStyle
+from PyQt5.QtWidgets import (
+    QWidget,
+    QApplication,
+    QLabel,
+    QVBoxLayout,
+    QPushButton,
+    QFileDialog,
+    QStyle,
+)
 from PyQt5.QtGui import QPixmap, QIcon, QFont
 import sys
 import cv2
@@ -19,11 +27,13 @@ class VideoThread(QThread):
         QThread.__init__(self)
         self.video_path = video_path
         self.config = config
-        self.detector = DirectionDetector(config=self.config, model=self.config.weights_path)
+        self.detector = DirectionDetector(
+            config=self.config, model=self.config.weights_path
+        )
         self._run_flag = True
         self.process_enabled = True
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.avi')
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".avi")
         self.temp_video_path = temp_file.name  # Get the temporary file path
         temp_file.close()  # Close the file so it can be used by cv2
 
@@ -31,7 +41,6 @@ class VideoThread(QThread):
         self.frame_width = None
         self.frame_height = None
         self.writer = None  # VideoWriter instance
-
 
     change_pixmap_signal = pyqtSignal(np.ndarray)
 
@@ -45,9 +54,13 @@ class VideoThread(QThread):
             self.frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
             # Initialize VideoWriter
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            self.writer = cv2.VideoWriter(self.temp_video_path, fourcc, self.fps,
-                                          (self.frame_width, self.frame_height))
+            fourcc = cv2.VideoWriter_fourcc(*"XVID")
+            self.writer = cv2.VideoWriter(
+                self.temp_video_path,
+                fourcc,
+                self.fps,
+                (self.frame_width, self.frame_height),
+            )
         else:
             print("Error: Unable to open video file.")
             return
@@ -55,7 +68,9 @@ class VideoThread(QThread):
         while self._run_flag:
             if not self.process_enabled:
                 print("Processing disabled, waiting...")
-                while not self.process_enabled:  # Wait until processing is enabled again
+                while (
+                    not self.process_enabled
+                ):  # Wait until processing is enabled again
                     QThread.msleep(100)  # Sleep for 100ms to avoid busy waiting
                 continue  # Skip to the next iteration once processing is enabled
 
@@ -96,7 +111,7 @@ class App(QWidget):
         self.image_label = QLabel(self)
         self.image_label.resize(self.disply_width, self.display_height)
         # create a text label
-        self.textLabel = QLabel('Video')
+        self.textLabel = QLabel("Video")
         self.config = DetectorConfig()
         self.config.show = False
         self.signal_manager = SignalManager()
@@ -108,7 +123,9 @@ class App(QWidget):
         openButton.setFixedHeight(24)
         openButton.setIconSize(btnSize)
         openButton.setFont(QFont("Noto Sans", 8))
-        openButton.setIcon(QIcon.fromTheme("document-open", QIcon("D:/_Qt/img/open.png")))
+        openButton.setIcon(
+            QIcon.fromTheme("document-open", QIcon("D:/_Qt/img/open.png"))
+        )
         openButton.clicked.connect(self.abrir)
 
         self.playButton = QPushButton()
@@ -136,16 +153,19 @@ class App(QWidget):
         # set the vbox layout as the widgets layout
         self.setLayout(vbox)
 
-        cv_img = cv2.imread('assets/moving-cars-labeled.jpg')
+        cv_img = cv2.imread("assets/moving-cars-labeled.jpg")
         qt_img = self.convert_cv_qt(cv_img)
         self.image_label.setPixmap(qt_img)
 
     def closeEvent(self, event):
         if hasattr(self, "thread"):
             self.thread.stop()
-            if self.thread.temp_video_path:  # Delete the temp file if it hasn't been saved
+            if (
+                self.thread.temp_video_path
+            ):  # Delete the temp file if it hasn't been saved
                 try:
                     import os
+
                     os.remove(self.thread.temp_video_path)
                     print("Temporary file deleted.")
                 except Exception as e:
@@ -163,45 +183,64 @@ class App(QWidget):
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
         h, w, ch = rgb_image.shape
         bytes_per_line = ch * w
-        convert_to_Qt_format = QtGui.QImage(rgb_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
-        p = convert_to_Qt_format.scaled(self.disply_width, self.display_height, Qt.KeepAspectRatio)
+        convert_to_Qt_format = QtGui.QImage(
+            rgb_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888
+        )
+        p = convert_to_Qt_format.scaled(
+            self.disply_width, self.display_height, Qt.KeepAspectRatio
+        )
         return QPixmap.fromImage(p)
 
     def abrir(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Selecciona los mediose",
-                                                  ".", "Video Files (*.mp4 *.flv *.ts *.mts *.avi)")
+        fileName, _ = QFileDialog.getOpenFileName(
+            self,
+            "Selecciona los mediose",
+            ".",
+            "Video Files (*.mp4 *.flv *.ts *.mts *.avi)",
+        )
 
-        if fileName != '':
+        if fileName != "":
             self.playButton.setEnabled(True)
-            self.saveButton.setEnabled(True)  # Enable Save button after video is opened and processing starts
+            self.saveButton.setEnabled(
+                True
+            )  # Enable Save button after video is opened and processing starts
             # create the video capture thread
             self.thread = VideoThread(fileName, self.config)
             # connect its signal to the update_image slot
             self.thread.change_pixmap_signal.connect(self.update_image)
-            self.signal_manager.toggle_process_signal.connect(self.thread.set_process_enabled)            # start the thread
+            self.signal_manager.toggle_process_signal.connect(
+                self.thread.set_process_enabled
+            )  # start the thread
             self.thread.start()
-
 
     def play_pause(self, checked):
         print("Play/Pause clicked")
-        self.signal_manager.toggle_process_signal.emit(checked)  # Emit signal through SignalManager
+        self.signal_manager.toggle_process_signal.emit(
+            checked
+        )  # Emit signal through SignalManager
         if checked:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
-
     def save_video(self):
         """Save the processed video file to disk."""
-        if hasattr(self, 'thread') and self.thread.temp_video_path:
-            save_path, _ = QFileDialog.getSaveFileName(self, "Save Processed Video", ".", "AVI Files (*.avi)")
+        if hasattr(self, "thread") and self.thread.temp_video_path:
+            save_path, _ = QFileDialog.getSaveFileName(
+                self, "Save Processed Video", ".", "AVI Files (*.avi)"
+            )
             if save_path:
                 import shutil
+
                 try:
                     shutil.move(self.thread.temp_video_path, save_path)
                     print(f"Video saved successfully to {save_path}")
-                    self.thread.temp_video_path = None  # Clear temp video path after saving
-                    self.saveButton.setEnabled(False)  # Disable save button after saving
+                    self.thread.temp_video_path = (
+                        None  # Clear temp video path after saving
+                    )
+                    self.saveButton.setEnabled(
+                        False
+                    )  # Disable save button after saving
                 except Exception as e:
                     print(f"Error saving file: {e}")
 
