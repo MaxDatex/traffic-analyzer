@@ -1,4 +1,3 @@
-from core.detector import DirectionDetector
 from config.config_handler import DetectorConfig
 import cv2
 import os
