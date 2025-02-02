@@ -1,5 +1,4 @@
 from config.config_handler import DetectorConfig
-import cv2
 import os
 
 from core.video_processor import process_video

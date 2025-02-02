@@ -1,6 +1,5 @@
 import numpy as np
 from typing import Tuple
-from scipy.stats import linregress
 
 
 def calculate_distance(start: Tuple[float, float], end: Tuple[float, float]) -> float:

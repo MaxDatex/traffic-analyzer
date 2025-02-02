@@ -1,6 +1,4 @@
 import argparse
-from pathlib import Path
-import cv2
 from core.video_processor import process_video
 from config.config_handler import DetectorConfig, load_config, save_config
 import os

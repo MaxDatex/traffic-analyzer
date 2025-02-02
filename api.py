@@ -1,12 +1,11 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException, Response
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import FileResponse
 from core.video_processor import process_video
 from config.config_handler import DetectorConfig
 import os
 import shutil
 import tempfile
-import subprocess  # For video processing (FFmpeg)
-import uuid  # For generating unique filenames
+import uuid
 
 app = FastAPI()
 
@@ -36,12 +35,7 @@ async def process_video_endpoint(file: UploadFile = File(...)):
 
         os.remove(tmp_path)  # Delete the temporary file after processing
 
-        # 4. Return the processed video for direct display/streaming
-        def iterfile():
-            with open(output_path, mode="rb") as file_like:
-                yield from file_like
-
-        # 5. Create download URL
+        # 4. Create download URL
         download_url = f"/download/{output_filename}"
 
         return {"download_url": download_url, "message": "Video processed successfully"}
