@@ -7,7 +7,7 @@ import shutil
 import tempfile
 import uuid
 
-app = FastAPI()
+app = FastAPI(title="Traffic analyzer")
 
 PROCESSED_DIR = "processed"
 os.makedirs(PROCESSED_DIR, exist_ok=True)

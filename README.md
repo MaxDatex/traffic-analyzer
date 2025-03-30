@@ -112,6 +112,9 @@ Example output of api:
 {"download_url": "/download/generated_uuid.mp4", "message": "Video processed successfully"}
 ```
 
+You can also try the api with swagger docs by navigating to `http://localhost:8000/docs`
+![Swagger API docs](assets/swagger.png)
+
 Example of processed Video:
 
 ![GIF Alt Text](assets/video.gif)
