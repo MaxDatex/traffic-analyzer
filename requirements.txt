@@ -7,3 +7,4 @@ pyyaml~=6.0.2
 pyqt5~=5.15.11
 fastapi~=0.115.8
 uvicorn~=0.32.1
+python-multipart
