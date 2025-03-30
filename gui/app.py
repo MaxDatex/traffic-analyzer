@@ -1,6 +1,7 @@
 from gui.managers import SignalManager
 from gui.threads import VideoThread
 
+import os
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import (
     QWidget,
@@ -15,6 +16,9 @@ import cv2
 from PyQt5.QtCore import pyqtSlot, Qt, QSize
 import numpy as np
 from config.config_handler import DetectorConfig
+
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class App(QWidget):
@@ -69,7 +73,7 @@ class App(QWidget):
         # set the vbox layout as the widgets layout
         self.setLayout(vbox)
 
-        cv_img = cv2.imread("../assets/moving-cars-labeled.jpg")
+        cv_img = cv2.imread(os.path.join(PROJECT_ROOT, "assets", "moving-cars-labeled.jpg"))
         qt_img = self.convert_cv_qt(cv_img)
         self.image_label.setPixmap(qt_img)
 
