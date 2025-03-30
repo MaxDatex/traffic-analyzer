@@ -94,7 +94,7 @@ The GUI allows you to open a video file, play/pause processing, and save the pro
 
 Example of GUI:
 
-![Example of GUI](assets/gui2.png)
+![Example of GUI](assets/gui1.png)
 ### API
 
 To start the FastAPI server:
