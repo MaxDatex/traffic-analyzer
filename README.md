@@ -113,6 +113,7 @@ Example output of api:
 ```
 
 You can also try the api with swagger docs by navigating to `http://localhost:8000/docs`
+
 ![Swagger API docs](assets/swagger.png)
 
 Example of processed Video:
